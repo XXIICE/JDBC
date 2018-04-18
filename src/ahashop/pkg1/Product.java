@@ -29,6 +29,9 @@ public class Product {
         this.price = price;
     }
 
+    public Product() {
+    }
+
     public int updateProduct() throws ClassNotFoundException, SQLException {
         int result =0;
 //        Class.forName("org.apache.derby.jdbc.ClientDriver");
@@ -64,12 +67,19 @@ public class Product {
         return result;
     }
     
+    
+    public static void orm(ResultSet rs,Product prod) throws SQLException{
+        prod.setProduct_id(rs.getInt("product_id"));
+        prod.setPrice(rs.getDouble("price"));
+        prod.setProduct_name(rs.getString("product_name"));
+    }
 
     public static Product findById(int id) throws ClassNotFoundException, SQLException {
         Product prod = null;
-        Class.forName("org.apache.derby.jdbc.ClientDriver");
-        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/aha_shop(1)", "app", "app");
-
+//        Class.forName("org.apache.derby.jdbc.ClientDriver");
+//        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/aha_shop(1)", "app", "app");
+        
+        Connection conn = DbConnection.getConnection();
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM product where product_id =" + id);
 //        while(rs.next()){
@@ -77,8 +87,12 @@ public class Product {
 ////            System.out.println(prod.toString());
 //        }
 //or
+//        if (rs.next()) {
+//            prod = new Product(rs.getInt("product_id"), rs.getString("product_name"), rs.getDouble("price"));
+//        }
         if (rs.next()) {
-            prod = new Product(rs.getInt("product_id"), rs.getString("product_name"), rs.getDouble("price"));
+            prod = new Product();
+            orm(rs,prod);
         }
         conn.close();
         return prod;
