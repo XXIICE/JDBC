@@ -53,13 +53,17 @@ public class Product {
             st.setInt(3, this.product_id);
             result=st.executeUpdate();
         }else{
-             result=st.executeUpdate("insert into product values ("+this.product_id+",'"+this.product_name+"',"+this.price+")");
+            st = conn.prepareStatement("insert into product values (?,?,?)");
+            st.setString(1, this.product_name);
+            st.setDouble(2, this.price);
+            st.setInt(3, this.product_id);
+            result=st.executeUpdate();
         }
-
 
         conn.close();
         return result;
     }
+    
 
     public static Product findById(int id) throws ClassNotFoundException, SQLException {
         Product prod = null;
